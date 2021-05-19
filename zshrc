@@ -1,22 +1,18 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH="/usr/local/opt/curl/bin:$PATH"
+export ZSH_2000_DISABLE_RVM='true'
 
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/junze/.oh-my-zsh"
-export JAVA8_HOME="/usr/local/Cellar/openjdk@8/1.8.0+275/libexec/openjdk.jdk/Contents/Home"
-export JAVA11_HOME="/usr/local/Cellar/openjdk@11/11.0.9/libexec/openjdk.jdk/Contents/Home"
-export JAVA_HOME=$JAVA11_HOME
-export ANDROID_SDK_ROOT="/Users/junze/Library/Android/sdk"
-
-alias java8="export JAVA_HOME=$JAVA8_HOME"
-alias java11="export JAVA_HOME=$JAVA11_HOME"
-java11
+alias v="nvim"
+alias vconf="nvim ~/.config/nvim/init.vim"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+ZSH_THEME="zsh2000"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -53,6 +49,8 @@ ZSH_THEME="robbyrussell"
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
+# Caution: this setting can cause issues with multiline prompts (zsh 5.7.1 and newer seem to work)
+# See https://github.com/ohmyzsh/ohmyzsh/issues/5765
 # COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
@@ -76,7 +74,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git osx)
+plugins=(git osx autojump zsh-autosuggestions fast-syntax-highlighting fancy-ctrl-z terraform)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -107,3 +105,6 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+autoload -U +X bashcompinit && bashcompinit
+complete -o nospace -C /usr/local/bin/terraform terraform

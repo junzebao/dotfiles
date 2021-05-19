@@ -1,0 +1,26 @@
+{
+	"languageserver": {
+		"terraform": {
+			"command": "terraform-ls",
+      "args": ["serve"],
+			"filetypes": [
+				"terraform",
+				"tf"
+			],
+			"initializationOptions": {},
+			"settings": {}
+		},
+    "bash": {
+      "command": "bash-language-server",
+      "args": ["start"],
+      "filetypes": ["sh"],
+      "ignoredRootPaths": ["~"]
+    }
+	},
+  "python.pythonPath": "python3",
+  "python.analysis.useLibraryCodeForTypes": true,
+  "python.linting.pylintEnabled": false,
+  "python.linting.pep8Enabled": true,
+  "python.linting.enabled": true,
+  "coc.preferences.colorSupport": true
+}
