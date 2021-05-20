@@ -32,6 +32,11 @@ set nofoldenable
 set maxmempattern=2000
 "set signcolumn=yes
 
+au FileType yaml setlocal sw=2 sts=2 ts=2
+au FileType jinja2 setlocal sw=2 sts=2 ts=2
+au FileType gitcommit setlocal spell tw=80
+au FileType json setlocal sw=2 sts=2 ts=2
+
 "vim plug
 call plug#begin(stdpath('data') . '/plugged')
 Plug 'airblade/vim-gitgutter'
@@ -41,11 +46,10 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
 Plug 'majutsushi/tagbar'
-Plug 'vim-syntastic/syntastic'
 Plug 'jiangmiao/auto-pairs'
 Plug 'rizzatti/dash.vim'
 Plug 'editorconfig/editorconfig-vim'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'fzf#install()' }
+Plug 'junegunn/fzf'
 
 Plug 'tomasiser/vim-code-dark'
 Plug 'fneu/breezy'
@@ -73,26 +77,8 @@ map <C-l> :NERDTreeToggle<CR>
 map <C-f> :NERDTreeFind<CR>
 
 " airline
-let g:airline_theme='codedark'
-
-au FileType yaml setlocal sw=2 sts=2 ts=2
-au FileType jinja2 setlocal sw=2 sts=2 ts=2
-au FileType gitcommit setlocal spell tw=80
-au FileType json setlocal sw=2 sts=2 ts=2
-
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-
-let g:syntastic_go_checkers = ['golint', 'govet', 'gometalinter']
-let g:syntastic_go_gometalinter_args = ['--disable-all', '--enable=errcheck']
-let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
-let g:go_list_type = "quickfix"
+let g:airline_theme='luna'
+let g:airline#extensions#whitespace#enabled = 1
 
 " terraform
 let g:terraform_align=1
@@ -173,6 +159,12 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 " coc-fzf-preview
 nnoremap <C-b> :<C-u>CocCommand fzf-preview.Buffers<CR>
 nnoremap <C-p> :<C-u>CocCommand fzf-preview.GitFiles<CR>
+let g:fzf_preview_grep_cmd = 'ag --nogroup --column --color --numbers '
+let g:fzf_preview_preview_key_bindings = 'ctrl-d:preview-page-down,ctrl-u:preview-page-up,?:toggle-preview'
+let g:fzf_preview_command = 'bat --color=always --plain --number {-1}' " Installed bat
+let g:fzf_preview_lines_command = 'bat --color=always --plain --number' " Installed bat
+nnoremap  <leader>ag  :<C-u>CocCommand fzf-preview.ProjectGrep<Space>
+let $FZF_PREVIEW_PREVIEW_BAT_THEME = 'ansi'
 
 " Dash
 nmap <silent> <leader>d <Plug>DashSearch
