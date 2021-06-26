@@ -30,12 +30,15 @@ set showmode
 set foldmethod=indent
 set nofoldenable
 set maxmempattern=2000
-"set signcolumn=yes
 
 au FileType yaml setlocal sw=2 sts=2 ts=2
 au FileType jinja2 setlocal sw=2 sts=2 ts=2
 au FileType gitcommit setlocal spell tw=80
 au FileType json setlocal sw=2 sts=2 ts=2
+
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+set termguicolors
 
 "vim plug
 call plug#begin(stdpath('data') . '/plugged')
@@ -50,9 +53,10 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'rizzatti/dash.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 
-Plug 'tomasiser/vim-code-dark'
-Plug 'fneu/breezy'
+Plug 'sonph/onehalf', { 'rtp': 'vim' }
+Plug 'mhartington/oceanic-next'
 
 Plug 'pearofducks/ansible-vim'
 Plug 'hashivim/vim-terraform'
@@ -61,7 +65,7 @@ Plug 'juliosueiras/vim-terraform-completion'
 Plug 'neoclide/coc.nvim'
 call plug#end()
 
-colorscheme breezy
+colorscheme onehalfdark
 
 " tab
 nnoremap <Tab> :tabn<CR>
@@ -77,8 +81,14 @@ map <C-l> :NERDTreeToggle<CR>
 map <C-f> :NERDTreeFind<CR>
 
 " airline
-let g:airline_theme='luna'
+let g:airline_theme='onehalfdark'
 let g:airline#extensions#whitespace#enabled = 1
+
+" fzf.vim
+nnoremap <C-b> :Buffers<CR>
+nnoremap <C-p> :GFiles<CR>
+nnoremap  <leader>ag :Ag<Space>
+let $FZF_DEFAULT_OPTS='--bind=ctrl-d:preview-down,ctrl-u:preview-up,?:toggle-preview'
 
 " terraform
 let g:terraform_align=1
@@ -95,30 +105,30 @@ let g:terraform_registry_module_completion = 0
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
 inoremap <silent><expr> <TAB>
-      \ pumvisible() ? coc#_select_confirm() :
-      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
+     \ pumvisible() ? coc#_select_confirm() :
+     \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+     \ <SID>check_back_space() ? "\<TAB>" :
+     \ coc#refresh()
 
 function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
+ let col = col('.') - 1
+ return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
-
 " Formatting selected code.
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
 
 " Mappings for CoCList
 " Show all diagnostics.
@@ -155,16 +165,6 @@ xmap <leader>x  <Plug>(coc-convert-snippet)
 
 " coc-highlight
 autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" coc-fzf-preview
-nnoremap <C-b> :<C-u>CocCommand fzf-preview.Buffers<CR>
-nnoremap <C-p> :<C-u>CocCommand fzf-preview.GitFiles<CR>
-let g:fzf_preview_grep_cmd = 'ag --nogroup --column --color --numbers '
-let g:fzf_preview_preview_key_bindings = 'ctrl-d:preview-page-down,ctrl-u:preview-page-up,?:toggle-preview'
-let g:fzf_preview_command = 'bat --color=always --plain --number {-1}' " Installed bat
-let g:fzf_preview_lines_command = 'bat --color=always --plain --number' " Installed bat
-nnoremap  <leader>ag  :<C-u>CocCommand fzf-preview.ProjectGrep<Space>
-let $FZF_PREVIEW_PREVIEW_BAT_THEME = 'ansi'
 
 " Dash
 nmap <silent> <leader>d <Plug>DashSearch
