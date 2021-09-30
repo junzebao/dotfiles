@@ -31,10 +31,15 @@ set foldmethod=indent
 set nofoldenable
 set maxmempattern=2000
 
+filetype plugin on
+au BufNewFile,BufRead *.yaml set filetype=mustache syntax=yaml
+au BufNewFile,BufRead Dockerfile.* set filetype=dockerfile
+au FileType mustache setlocal sw=2 sts=2 ts=2
 au FileType yaml setlocal sw=2 sts=2 ts=2
 au FileType jinja2 setlocal sw=2 sts=2 ts=2
 au FileType gitcommit setlocal spell tw=80
 au FileType json setlocal sw=2 sts=2 ts=2
+au FileType python setlocal sw=4 sts=4 ts=4
 
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
@@ -46,14 +51,18 @@ Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'enricobacis/vim-airline-clock'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
-Plug 'majutsushi/tagbar'
+Plug 'preservim/tagbar'
 Plug 'jiangmiao/auto-pairs'
 Plug 'rizzatti/dash.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
+Plug 'mustache/vim-mustache-handlebars'
+Plug 'tpope/vim-abolish'
+Plug 'fatih/vim-go'
 
 Plug 'sonph/onehalf', { 'rtp': 'vim' }
 Plug 'mhartington/oceanic-next'
@@ -168,3 +177,8 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Dash
 nmap <silent> <leader>d <Plug>DashSearch
+
+nnoremap <leader>ac :s#_\(\l\)#\u\1#g<cr>
+nnoremap <leader>us :s#\C\(\<\u[a-z0-9]\+\|[a-z0-9]\+\)\(\u\)#\l\1_\l\2#g<cr>
+
+map , @@

@@ -5,6 +5,10 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+export VISUAL=nvim
+export EDITOR="$VISUAL"
+export BAT_THEME="gruvbox-dark"
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH="/usr/local/opt/curl/bin:$PATH"
@@ -32,23 +36,20 @@ export SSH_AUTH_SOCK=/Users/junze/.ssh/agent
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-autoload -U +X bashcompinit && bashcompinit
-complete -o nospace -C /usr/local/bin/terraform terraform
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+[ -f ~/.alias ] && source ~/.alias
 
 function change_env {
     export AWS_PROFILE=tutti-$1;
     export STACK=$1;
-    if [ $1 != sys ]; then
+    if [ $1 != sysops -a $1 != backup ]; then
         aws eks --region eu-central-1 update-kubeconfig --name $1__cluster;
+        kcn tutti-services;
+        aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin `aws sts get-caller-identity | jq -r .Account`.dkr.ecr.eu-central-1.amazonaws.com
         if [ -d .terraform ]; then
             tf workspace select $1;
         fi
     fi
 }
-
-[ -f ~/.alias ] && source ~/.alias
-
-complete -o nospace -C /usr/local/Cellar/tfenv/2.2.1/versions/0.14.8/terraform terraform

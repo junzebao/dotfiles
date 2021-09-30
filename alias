@@ -1,0 +1,18 @@
+alias v="nvim"
+alias vconf="nvim ~/.config/nvim/init.vim"
+
+alias sys="change_env sysops"
+alias testing="change_env testing"
+alias staging="change_env staging"
+alias live="change_env live"
+alias backup="change_env backup"
+
+alias kk="k -n kube-system"
+alias kt="k -n tutti-services"
+alias kp="k -n prometheus"
+alias kg="k get "
+alias kgsa="k get sa"
+alias kgpv="k get pv"
+
+alias gitprune="git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -d"
+alias kdeljob="k get job -ojson | jq '.items[] | select(.status.succeeded != 1) | .metadata.name' | xargs -I {} kubectl  delete job {}"
