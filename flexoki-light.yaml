@@ -1,0 +1,106 @@
+# Flexoki Light skin for k9s
+# Colors mapped from LFK's flexoki-light theme
+# -----------------------------------------------------------------------------
+
+# Styles...
+primary: &primary "#205ea6"
+secondary: &secondary "#66800b"
+text: &text "#100f0f"
+selectedFg: &selectedFg "#fffcf0"
+selectedBg: &selectedBg "#205ea6"
+border: &border "#b7b5ac"
+dimmed: &dimmed "#b7b5ac"
+error: &error "#af3029"
+warning: &warning "#ad8301"
+purple: &purple "#a02f6f"
+base: &base "#fffcf0"
+barBg: &barBg "#efece1"
+surface: &surface "#f7f4e8"
+
+k9s:
+  body:
+    fgColor: *text
+    bgColor: *base
+    logoColor: *primary
+  prompt:
+    fgColor: *text
+    bgColor: *base
+    suggestColor: *warning
+    border:
+      command: *secondary # green when typing :
+      default: *border # warm gray otherwise
+  info:
+    fgColor: *purple
+    sectionColor: *text
+  dialog:
+    fgColor: *text
+    bgColor: *base
+    buttonFgColor: *selectedFg
+    buttonBgColor: *primary
+    buttonFocusFgColor: *selectedFg
+    buttonFocusBgColor: *secondary
+    labelFgColor: *warning
+    fieldFgColor: *text
+  frame:
+    border:
+      fgColor: *border
+      focusColor: *secondary
+    menu:
+      fgColor: *text
+      keyColor: *purple
+      numKeyColor: *purple
+    crumbs:
+      fgColor: *selectedFg
+      bgColor: *dimmed
+      activeColor: *primary
+    status:
+      newColor: *secondary
+      modifyColor: *primary
+      addColor: *secondary
+      errorColor: *error
+      highlightColor: *warning
+      killColor: *dimmed
+      completedColor: *dimmed
+    title:
+      fgColor: *text
+      bgColor: *base
+      highlightColor: *warning
+      counterColor: *primary
+      filterColor: *purple
+  views:
+    charts:
+      bgColor: *base
+      chartBgColor: *surface
+      dialBgColor: *barBg
+      defaultDialColors:
+        - *secondary
+        - *error
+      defaultChartColors:
+        - *primary
+        - *secondary
+    table:
+      fgColor: *text
+      bgColor: *base
+      cursorFgColor: *selectedFg
+      cursorBgColor: *selectedBg
+      markColor: *warning
+      header:
+        fgColor: *text
+        bgColor: *base
+        sorterColor: *secondary
+    xray:
+      fgColor: *text
+      bgColor: *base
+      cursorColor: *barBg
+      graphicColor: *primary
+      showIcons: false
+    yaml:
+      keyColor: *purple
+      colonColor: *primary
+      valueColor: *text
+    logs:
+      fgColor: *text
+      bgColor: *base
+      indicator:
+        fgColor: *text
+        bgColor: *barBg
