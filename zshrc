@@ -14,12 +14,12 @@ setopt COMPLETE_IN_WORD ALWAYS_TO_END
 # misc
 setopt EXTENDED_GLOB INTERACTIVE_COMMENTS
 
-
 ########################### Settings ########################
 export EDITOR='nvim'
 
 eval "$(zsh-patina activate)"
 eval "$(starship init zsh)"
+eval "$(zoxide init zsh)"
 
 ########################### Auto Completions #################
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -30,6 +30,7 @@ source ~/.config/zsh/kubectl.plugin.zsh
 
 ############################ Aliases #############################
 alias -- -='cd -'
+alias l="ls -lah"
 alias v="nvim"
 alias b="bazelisk"
 alias k="kubectl"
