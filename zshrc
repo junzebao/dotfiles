@@ -1,107 +1,113 @@
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+######################## Auto enabled in omz ######################
+# directory nav
+setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_MINUS
 
-# Path to your Oh My Zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
-export PATH="$HOME/.local/bin:$PATH"
+# history
+setopt EXTENDED_HISTORY SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE HIST_REDUCE_BLANKS HIST_VERIFY
+HISTSIZE=50000
+SAVEHIST=50000
+HISTFILE=~/.zsh_history
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time Oh My Zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+# completion
+setopt COMPLETE_IN_WORD ALWAYS_TO_END
 
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in $ZSH/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
+# misc
+setopt EXTENDED_GLOB INTERACTIVE_COMMENTS
 
-# Uncomment the following line to use case-sensitive completion.
-# CASE_SENSITIVE="true"
 
-# Uncomment the following line to use hyphen-insensitive completion.
-# Case-sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
-
-# Uncomment one of the following lines to change the auto-update behavior
-# zstyle ':omz:update' mode disabled  # disable automatic updates
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
-
-# Uncomment the following line to change how often to auto-update (in days).
-# zstyle ':omz:update' frequency 13
-
-# Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
-
-# Uncomment the following line to disable colors in ls.
-# DISABLE_LS_COLORS="true"
-
-# Uncomment the following line to disable auto-setting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
-
-# Uncomment the following line to display red dots whilst waiting for completion.
-# You can also set it to another string to have that shown instead of the default red dots.
-# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
-# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment the following line if you want to change the command execution time
-# stamp shown in the history command output.
-# You can set one of the optional three formats:
-# "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
-# or set a custom format using the strftime function format specifications,
-# see 'man strftime' for details.
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Would you like to use another custom folder than $ZSH/custom?
-# ZSH_CUSTOM=/path/to/new-custom-folder
-
-# Which plugins would you like to load?
-# Standard plugins can be found in $ZSH/plugins/
-# Custom plugins may be added to $ZSH_CUSTOM/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git macos zoxide kubectl helm)
-
-source $ZSH/oh-my-zsh.sh
-
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# You may need to manually set your language environment
-# export LANG=en_US.UTF-8
-
+########################### Settings ########################
 export EDITOR='nvim'
 
-# Compilation flags
-# export ARCHFLAGS="-arch $(uname -m)"
-
-# Set personal aliases, overriding those provided by Oh My Zsh libs,
-# plugins, and themes. Aliases can be placed here, though Oh My Zsh
-# users are encouraged to define aliases within a top-level file in
-# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
-# - $ZSH_CUSTOM/aliases.zsh
-# - $ZSH_CUSTOM/macos.zsh
-# For a full list of active aliases, run `alias`.
-#
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
-alias v="nvim"
-
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source <(fzf --zsh)
-eval "$(/opt/homebrew/bin/zsh-patina activate)"
+eval "$(zsh-patina activate)"
 eval "$(starship init zsh)"
 
+########################### Auto Completions #################
+source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source <(fzf --zsh)
+source <(kubectl completion zsh)
+source ~/.config/zsh/git.plugin.zsh
+source ~/.config/zsh/kubectl.plugin.zsh
+
+############################ Aliases #############################
+alias -- -='cd -'
+alias v="nvim"
+alias b="bazelisk"
+alias k="kubectl"
+alias kx="kubectx"
+#alias k9sdev="k9s --context saas-dev-0-tailscale-operator.taila064d.ts.net"
+alias k9sdev="k9s --context arn:aws:eks:us-east-2:939990436136:cluster/us-east-2-saas-dev-0"
+alias k9sd="k9s --context data-3-tailscale-operator.taila064d.ts.net"
+
+############################ Functions ###########################
+function assume_role() {
+   local role_arn="$1"
+   local session_name="${2:-temp-session}"
+
+   if [[ -z "$role_arn" ]]; then
+       echo "Usage: assume_role <role_arn> [session_name]"
+       return 1
+   fi
+
+   local creds=$(aws sts assume-role \
+       --role-arn "$role_arn" \
+       --role-session-name "$session_name" \
+       --output json)
+
+   export AWS_ACCESS_KEY_ID=$(echo $creds | jq -r .Credentials.AccessKeyId)
+   export AWS_SECRET_ACCESS_KEY=$(echo $creds | jq -r .Credentials.SecretAccessKey)
+   export AWS_SESSION_TOKEN=$(echo $creds | jq -r .Credentials.SessionToken)
+}
+
+function ssm() {
+    kubectl get no $1 -ojson | jq '.spec.providerID' -r | awk -F'/' '{print $NF}' | AWS_REGION=us-east-2 xargs -o -I{} aws ssm start-session --target {}
+}
+
+function gitprune() {
+  git fetch -p && \
+  git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -D
+}
+
+function gwn() {
+  if [[ -z "$1" ]]; then
+    echo "usage: gwn <name>" >&2
+    return 1
+  fi
+  local name="$1"
+  local repo_root
+  repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || {
+    echo "gwn: not inside a git repository" >&2
+    return 1
+  }
+  local target="${repo_root%/*}/${name}"
+  if git show-ref --verify --quiet "refs/heads/${name}"; then
+    git worktree add "$target" "$name" || return $?
+  else
+    git fetch origin main --quiet || return $?
+    git worktree add -b "$name" "$target" origin/main || return $?
+  fi
+  cmux new-workspace --name "$name" --cwd "$target" --focus true
+}
+
+function gwd() {
+  local repo_root
+  repo_root="$(git rev-parse --show-toplevel 2>/dev/null)" || {
+    echo "gwd: not inside a git repository" >&2
+    return 1
+  }
+  local main_root
+  main_root="$(git worktree list --porcelain | awk '/^worktree /{print $2; exit}')"
+  if [[ "$repo_root" == "$main_root" ]]; then
+    echo "gwd: refusing to remove the main worktree ($repo_root)" >&2
+    return 1
+  fi
+
+  local ws_ref
+  ws_ref="$(cmux identify 2>/dev/null | awk -F'"' '/"workspace_ref"/{print $4; exit}')"
+
+  cd "${main_root:-${repo_root%/*}}"
+  git worktree remove "$repo_root" || return $?
+
+  if [[ -n "$ws_ref" ]]; then
+    cmux close-workspace --workspace "$ws_ref"
+  fi
+}
