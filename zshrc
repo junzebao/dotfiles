@@ -13,6 +13,8 @@ setopt COMPLETE_IN_WORD ALWAYS_TO_END
 
 # misc
 setopt EXTENDED_GLOB INTERACTIVE_COMMENTS
+autoload -Uz compinit
+compinit
 
 ########################### Settings ########################
 export EDITOR='nvim'
