@@ -18,6 +18,7 @@ compinit
 
 ########################### Settings ########################
 export EDITOR='nvim'
+export PATH="/opt/homebrew/opt/postgresql@18/bin:$PATH"
 
 eval "$(zsh-patina activate)"
 eval "$(starship init zsh)"
@@ -36,10 +37,12 @@ alias l="ls -lah"
 alias v="nvim"
 alias b="bazelisk"
 alias k="kubectl"
+alias kg="kubectl get"
 alias kx="kubectx"
 #alias k9sdev="k9s --context saas-dev-0-tailscale-operator.taila064d.ts.net"
 alias k9sdev="k9s --context arn:aws:eks:us-east-2:939990436136:cluster/us-east-2-saas-dev-0"
 alias k9sd="k9s --context data-3-tailscale-operator.taila064d.ts.net"
+alias claude="claude --setting-sources=user"
 
 ############################ Functions ###########################
 function assume_role() {
@@ -81,12 +84,13 @@ function gwn() {
     echo "gwn: not inside a git repository" >&2
     return 1
   }
+  local branch="junze/${name}"
   local target="${repo_root%/*}/${name}"
-  if git show-ref --verify --quiet "refs/heads/${name}"; then
-    git worktree add "$target" "$name" || return $?
+  if git show-ref --verify --quiet "refs/heads/${branch}"; then
+    git worktree add "$target" "$branch" || return $?
   else
     git fetch origin main --quiet || return $?
-    git worktree add -b "$name" "$target" origin/main || return $?
+    git worktree add -b "$branch" "$target" origin/main || return $?
   fi
   cmux new-workspace --name "$name" --cwd "$target" --focus true
 }
@@ -113,4 +117,8 @@ function gwd() {
   if [[ -n "$ws_ref" ]]; then
     cmux close-workspace --workspace "$ws_ref"
   fi
+}
+
+function pr() {
+  gh pr view --web
 }
