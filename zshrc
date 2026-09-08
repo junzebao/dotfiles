@@ -1,4 +1,4 @@
-######################## Auto enabled in omz ######################
+######################## Shell options ########################
 # directory nav
 setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS PUSHD_MINUS
 
@@ -18,18 +18,26 @@ compinit
 
 ########################### Settings ########################
 export EDITOR='nvim'
-export PATH="/opt/homebrew/opt/postgresql@18/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
-eval "$(zsh-patina activate)"
-eval "$(starship init zsh)"
-eval "$(zoxide init zsh)"
+if [[ -d /opt/homebrew/opt/postgresql@18/bin ]]; then
+  export PATH="/opt/homebrew/opt/postgresql@18/bin:$PATH"
+fi
+
+command -v zsh-patina >/dev/null 2>&1 && eval "$(zsh-patina activate)"
+command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
+command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh)"
 
 ########################### Auto Completions #################
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source <(fzf --zsh)
-source <(kubectl completion zsh)
-source ~/.config/zsh/git.plugin.zsh
-source ~/.config/zsh/kubectl.plugin.zsh
+if [[ -n ${HOMEBREW_PREFIX:-} && -r "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+  source "$HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+fi
+
+command -v fzf >/dev/null 2>&1 && source <(fzf --zsh)
+command -v kubectl >/dev/null 2>&1 && source <(kubectl completion zsh)
+
+[[ -r ~/.config/zsh/git.plugin.zsh ]] && source ~/.config/zsh/git.plugin.zsh
+[[ -r ~/.config/zsh/kubectl.plugin.zsh ]] && source ~/.config/zsh/kubectl.plugin.zsh
 
 ############################ Aliases #############################
 alias -- -='cd -'

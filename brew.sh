@@ -1,18 +1,19 @@
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-touch ~/.zprofile && echo 'eval "$(/opt/homebrew/bin/brew shellenv zsh)"' >>~/.zprofile && eval "$(/opt/homebrew/bin/brew shellenv zsh)"
-brew install neovim
-brew install zoxide
+#!/usr/bin/env bash
 
-brew install zsh-autosuggestions
-# echo "source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" >>~/.zshrc
+set -euo pipefail
 
-brew install starship
-# echo 'eval "\$(starship init zsh)"' >>~/.zshrc
+if ! command -v brew >/dev/null 2>&1; then
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
 
-brew tap michel-kraemer/zsh-patina && brew install zsh-patina
-# echo 'eval "\$($(brew --prefix)/bin/zsh-patina activate)"' >>~/.zshrc
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -x /usr/local/bin/brew ]]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
 
-brew install fzf
-# echo 'source <(fzf --zsh)' >>~/.zshrc
-
-brew install maccy
+brew install neovim zoxide zsh-autosuggestions starship fzf
+brew install lazygit fd ripgrep tree-sitter-cli
+brew tap michel-kraemer/zsh-patina
+brew install zsh-patina
+brew install --cask maccy
